@@ -1,4 +1,4 @@
-cd frontend/stock-trading
+cd frontend
 
 npm install
 npm start

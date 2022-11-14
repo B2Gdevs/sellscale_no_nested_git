@@ -6,7 +6,6 @@ import FormControl from '@mui/material/FormControl';
 import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
 import TextField from '@mui/material/TextField';
-import ResponsiveAppBar from '.components/ResponsiveAppBar'
 
 /**
  * 
@@ -213,7 +212,6 @@ function App() {
 
   return (
     <div>
-      <ResponsiveAppBar/>
       {err && <h2>{err}</h2>}
 
       {isLoading && <h2>Loading...</h2>}
