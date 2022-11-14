@@ -4,4 +4,6 @@ export POSTGRES_USER="postgres"
 export POSTGRES_PASSWORD="password"
 export POSTGRES_DB="sellscale"
 
+# Avoid using pip directly
+python -m pip install -r requirements.txt
 python app.py
