@@ -1,5 +1,5 @@
 from flask import Flask, request
-from utils import get_env_variable  
+from utils import get_env_variable
 from flask_sqlalchemy import SQLAlchemy
 from config import get_config
 import datetime
@@ -9,6 +9,7 @@ from flask_cors import CORS
 
 db = None
 
+
 def create_app(env=None):
     global db
     app = Flask(__name__)
@@ -17,11 +18,13 @@ def create_app(env=None):
     db = SQLAlchemy(app)
     return app
 
+
 app = create_app()
 
-# Model Definitions, this sucks and I need a better way to separate this without having a circular import error.  
+# Model Definitions, this sucks and I need a better way to separate this without having a circular import error.
 # models should be in a diff file.
 # =================== Models ======================================
+
 
 class BaseModel:
     def save(self):
@@ -44,15 +47,19 @@ class Order(db.Model, BaseModel):
     ticker_name = db.Column(db.String, nullable=True)
     quantity = db.Column(db.Integer)
     price = db.Column(db.Float)
+    total = db.Column(db.Float)
 
-    def __init__(self, user_id: int, ticker_name: str):
+    def __init__(self, user_id: int, ticker_name: str, quantity: int, price: float):
         self.user_id = user_id
         self.ticker_name = ticker_name
+        self.quantity = quantity
+        self.price = price
+        self.total = quantity * price
 
 
 class User(db.Model, BaseModel):
     id = db.Column(db.Integer, primary_key=True,
-        unique=True, nullable=False)
+                   unique=True, nullable=False)
     username = db.Column(
         db.String,
         unique=True, nullable=False)
@@ -70,12 +77,17 @@ def format_user(user_obj: User):
     return {"user_name": user_obj.username,
             "user_id": user_obj.id}
 
+
 def format_order(order_obj: Order):
     """Format order objects for json response in the API."""
     return {"ticker_name": order_obj.ticker_name,
             "order_id": order_obj.id,
+            "quantity": order_obj.quantity,
+            "price": order_obj.price,
+            "total": order_obj.total,
             "user_id": order_obj.user_id}
 # =================== End: Serializers ======================================
+
 
 @app.route("/api/users", methods=["POST"])
 def create_user():
@@ -85,11 +97,13 @@ def create_user():
     new_user.save()
     return format_user(new_user)
 
+
 @app.route("/api/users", methods=["GET"])
 def get_users():
     """Get all users in the DB."""
     users = User.query.order_by(User.id.asc()).all()
     return [format_user(user) for user in users]
+
 
 @app.route("/api/users/<user_id>", methods=["GET"])
 def get_user(user_id):
@@ -97,14 +111,19 @@ def get_user(user_id):
     user = User.query.get(user_id)
     return format_user(user)
 
+
 @app.route("/api/orders", methods=["POST"])
 def create_order():
     """Create an order for a user."""
     ticker_name = request.json['ticker_name']
     user_id = request.json['user_id']
-    new_order = Order(user_id=user_id, ticker_name=ticker_name)
+    quantity = request.json['quantity']
+    price = request.json['price']
+    new_order = Order(user_id=user_id, ticker_name=ticker_name,
+                      quantity=quantity, price=price)
     new_order.save()
     return format_order(new_order)
+
 
 @app.route("/api/orders", methods=["GET"])
 def get_orders_by_user():
@@ -115,11 +134,13 @@ def get_orders_by_user():
         return [format_order(order) for order in user.orders]
     return [format_order(order) for order in Order.query.order_by(Order.id.asc()).all()]
 
+
 @app.route("/api/orders/<order_id>", methods=["GET"])
 def get_order(order_id):
     """Return an order's detail."""
     order = Order.query.get(order_id)
     return format_order(order)
+
 
 @app.route("/api/tickers/<ticker_symbol>", methods=["GET"])
 def get_ticker(ticker_symbol):
@@ -128,11 +149,13 @@ def get_ticker(ticker_symbol):
     ticker = yf.Ticker(ticker_symbol)
     return ticker.info
 
+
 @app.route("/api/tickers", methods=["GET"])
 def get_tickers():
     """Return a list of ticker symbols to choose from."""
     # providing some defaults for testing purposes
     return ['MSFT', 'TSLA']
+
 
 if __name__ == "__main__":
     app.run()
