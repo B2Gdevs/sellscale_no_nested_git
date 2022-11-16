@@ -243,7 +243,7 @@ function App() {
 
       <Grid item xs={12} sm={12} md={12} lg={6}>
         <TickerDropDown setIsLoading={setIsLoading} setErr={setErr} onChange={setSelectedTicker} selectedValue={selectedTicker} />
-        <Button variant="contained" onClick={viewTickerHandler} sx={{ bgcolor: '#FFA500' }}>View Ticker Info</Button>
+        <Button variant="contained" onClick={viewTickerHandler} sx={{ bgcolor: '#FFA500', borderRadius: 20}}>View Ticker Info</Button>
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>
@@ -277,7 +277,7 @@ function App() {
         />
         <div>
 
-          <Button variant="contained" sx={{ bgcolor: '#FFA500' }} onClick={createOrderHandler}>Purchase</Button>
+          <Button variant="contained" sx={{ bgcolor: '#FFA500', borderRadius: 20 }} onClick={createOrderHandler}>Purchase</Button>
         </div>
       </Grid>
       <Grid item lg={6}>
