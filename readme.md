@@ -37,6 +37,7 @@ _It is being populated, but selecting the ticker in the dropdown isn't working._
 - [ ] Yeesh, make it look nice.  Wasted time with Bootstrap CSS not loading.
 
 
-# Enhanced the UI after the 4hr mark...it is embaraasing, but it took a bit longer than I care to admit to get it to this level lol.  👍, I am cool with it.
+# 😅 Enhanced the UI after the 4hr mark...
+> it is embaraasing, but it took a bit longer than I care to admit to get it to this level lol.  👍, I am cool with it.  Cool lottie animation though
 ![image](https://user-images.githubusercontent.com/25157436/202079047-837d2cd2-5512-460e-9cba-870ed5be0c43.png)
 
